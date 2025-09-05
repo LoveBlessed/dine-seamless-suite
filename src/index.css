@@ -2,41 +2,73 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Eatery Design System - Premium Restaurant Experience */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Core Brand Colors */
+    --background: 45 15% 97%;
+    --foreground: 25 20% 15%;
 
+    /* Card System */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 25 20% 15%;
 
+    /* Interactive Elements */
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 25 20% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Primary - Warm Orange (Restaurant Brand) */
+    --primary: 25 95% 53%;
+    --primary-foreground: 0 0% 100%;
+    --primary-hover: 25 85% 48%;
+    --primary-glow: 25 95% 65%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    /* Secondary - Deep Green (Fresh/Natural) */
+    --secondary: 140 35% 25%;
+    --secondary-foreground: 0 0% 100%;
+    --secondary-hover: 140 35% 20%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    /* Accent - Warm Brown (Earthy) */
+    --accent: 30 25% 20%;
+    --accent-foreground: 45 25% 95%;
+    --accent-light: 30 15% 85%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Status Colors for Orders */
+    --status-new: 200 85% 55%;
+    --status-cooking: 45 90% 60%;
+    --status-ready: 140 60% 50%;
+    --status-completed: 140 35% 25%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    /* Muted/Neutral */
+    --muted: 45 8% 92%;
+    --muted-foreground: 25 10% 45%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Destructive */
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --radius: 0.5rem;
+    /* Borders & Inputs */
+    --border: 45 8% 88%;
+    --input: 45 8% 95%;
+    --ring: 25 95% 53%;
+
+    /* Design System Enhancements */
+    --gradient-warm: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-glow)) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(var(--background)) 0%, hsl(var(--muted)) 100%);
+    
+    /* Shadows */
+    --shadow-sm: 0 2px 8px hsl(var(--foreground) / 0.05);
+    --shadow-md: 0 4px 16px hsl(var(--foreground) / 0.1);
+    --shadow-lg: 0 8px 32px hsl(var(--foreground) / 0.15);
+    --shadow-warm: 0 8px 24px hsl(var(--primary) / 0.2);
+
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    --radius: 0.75rem;
 
     --sidebar-background: 0 0% 98%;
 
