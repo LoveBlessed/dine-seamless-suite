@@ -1,11 +1,38 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ChefHat, Users, Shield, QrCode, Clock, MapPin } from "lucide-react";
+import { ChefHat, Users, Shield, QrCode, Clock, MapPin, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import GuestCheckout from "@/components/guest/GuestCheckout";
+import { useToast } from "@/hooks/use-toast";
 import heroImage from "@/assets/hero-restaurant.jpg";
 
 const Index = () => {
   const navigate = useNavigate();
+  const { user, profile, signOut } = useAuth();
+  const { toast } = useToast();
+
+  const handleGuestCheckout = (name: string, email?: string) => {
+    // Store guest info in localStorage for the session
+    localStorage.setItem('guest_checkout', JSON.stringify({ name, email }));
+    navigate('/menu');
+  };
+
+  const handleSignOut = async () => {
+    const { error } = await signOut();
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to sign out. Please try again.",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Signed Out",
+        description: "You have been signed out successfully.",
+      });
+    }
+  };
 
   const roles = [
     {
@@ -54,6 +81,47 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-subtle">
+      {/* Header */}
+      <header className="absolute top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
+        <div className="max-w-7xl mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <ChefHat className="h-8 w-8 text-primary" />
+              <span className="text-2xl font-bold text-foreground">Bistro & Garden</span>
+            </div>
+            <nav className="flex items-center space-x-4">
+              {user && profile ? (
+                <div className="flex items-center space-x-4">
+                  <span className="text-sm text-muted-foreground">
+                    Welcome, {profile.full_name}
+                  </span>
+                  <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </Button>
+                  {profile.role === 'staff' && (
+                    <Button variant="outline" size="sm" onClick={() => navigate("/staff")}>
+                      Staff Dashboard
+                    </Button>
+                  )}
+                  {profile.role === 'admin' && (
+                    <Button variant="outline" size="sm" onClick={() => navigate("/admin")}>
+                      Admin Panel
+                    </Button>
+                  )}
+                </div>
+              ) : (
+                <div className="flex items-center space-x-4">
+                  <Button variant="outline" size="sm" onClick={() => navigate("/auth")}>
+                    Staff Login
+                  </Button>
+                </div>
+              )}
+            </nav>
+          </div>
+        </div>
+      </header>
+      
       {/* Hero Section */}
       <section className="relative h-screen flex items-center justify-center overflow-hidden">
         <div 
@@ -73,22 +141,29 @@ const Index = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button 
-              variant="hero" 
-              size="lg"
-              onClick={() => navigate("/menu")}
-              className="text-lg px-8 py-6"
-            >
-              <QrCode className="mr-2 h-5 w-5" />
-              Start Ordering
-            </Button>
+            {user && profile ? (
+              <Button 
+                variant="hero" 
+                size="lg"
+                onClick={() => navigate("/menu")}
+                className="text-lg px-8 py-6"
+              >
+                <QrCode className="mr-2 h-5 w-5" />
+                View Menu
+              </Button>
+            ) : (
+              <GuestCheckout 
+                onGuestCheckout={handleGuestCheckout}
+                onLoginRedirect={() => navigate('/auth')}
+              />
+            )}
             <Button 
               variant="outline" 
               size="lg"
-              onClick={() => navigate("/staff")}
+              onClick={() => navigate("/menu")}
               className="text-lg px-8 py-6 bg-background/80 backdrop-blur-sm"
             >
-              Staff Access
+              Browse Menu
             </Button>
           </div>
         </div>
