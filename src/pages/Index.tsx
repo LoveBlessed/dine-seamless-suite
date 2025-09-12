@@ -48,7 +48,7 @@ const Index = () => {
       description: "Manage orders, tables, and kitchen operations efficiently",
       icon: Users,
       features: ["Order Management", "Table Status", "Kitchen Display"],
-      action: () => navigate("/staff"),
+      action: () => navigate("/auth"),
       variant: "secondary" as const,
     },
     {
@@ -56,7 +56,7 @@ const Index = () => {
       description: "Full system control, analytics, and menu management",
       icon: Shield,
       features: ["Menu Control", "Analytics", "Inventory Management"],
-      action: () => navigate("/admin"),
+      action: () => navigate("/auth"),
       variant: "menu" as const,
     },
   ];

@@ -11,8 +11,10 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
   requiredRole,
-  redirectTo = '/customer-auth'
+  redirectTo
 }) => {
+  // Determine redirect path based on required role
+  const defaultRedirectTo = requiredRole === 'customer' ? '/customer-auth' : '/auth';
   const { user, profile, loading } = useAuth();
 
   if (loading) {
@@ -27,7 +29,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   if (!user || !profile) {
-    return <Navigate to={redirectTo} replace />;
+    return <Navigate to={redirectTo || defaultRedirectTo} replace />;
   }
 
   if (requiredRole && profile.role !== requiredRole) {
