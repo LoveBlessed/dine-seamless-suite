@@ -104,7 +104,7 @@ const GuestCheckout: React.FC<GuestCheckoutProps> = ({ onGuestCheckout, onLoginR
               }}
             >
               <Mail className="h-4 w-4 mr-2" />
-              Sign in for order history
+              Customer Login
             </Button>
           </div>
         </form>

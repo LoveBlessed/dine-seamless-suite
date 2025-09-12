@@ -11,7 +11,7 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   children,
   requiredRole,
-  redirectTo = '/auth'
+  redirectTo = '/customer-auth'
 }) => {
   const { user, profile, loading } = useAuth();
 

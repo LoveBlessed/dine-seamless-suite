@@ -11,6 +11,7 @@ import Checkout from "./pages/Checkout";
 import Staff from "./pages/Staff";
 import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
+import CustomerAuth from "./pages/CustomerAuth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
             <Route path="/menu" element={<Menu />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/customer-auth" element={<CustomerAuth />} />
             <Route 
               path="/staff" 
               element={

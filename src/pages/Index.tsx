@@ -154,7 +154,7 @@ const Index = () => {
             ) : (
               <GuestCheckout 
                 onGuestCheckout={handleGuestCheckout}
-                onLoginRedirect={() => navigate('/auth')}
+                onLoginRedirect={() => navigate('/customer-auth')}
               />
             )}
             <Button 
