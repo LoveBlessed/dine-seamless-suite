@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ArrowLeft, Search, Filter, Plus, Minus, ShoppingCart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import CartSidebar from "@/components/cart/CartSidebar";
 import burgerImage from "@/assets/food-burger.jpg";
 import saladImage from "@/assets/food-salad.jpg";
 import pizzaImage from "@/assets/food-pizza.jpg";
@@ -56,6 +57,89 @@ const Menu = () => {
       dietary: ["Vegetarian"],
       popular: true,
     },
+    {
+      id: "4",
+      name: "Grilled Salmon",
+      description: "Fresh Atlantic salmon with lemon herb butter, served with seasonal vegetables",
+      price: 26.99,
+      image: pizzaImage, // Using placeholder image
+      category: "Mains",
+      dietary: ["Gluten-Free", "Keto-Friendly"],
+      popular: true,
+    },
+    {
+      id: "5",
+      name: "Chicken Caesar Wrap",
+      description: "Grilled chicken, romaine lettuce, parmesan cheese, and Caesar dressing in a tortilla wrap",
+      price: 16.99,
+      image: burgerImage, // Using placeholder image
+      category: "Mains",
+      dietary: ["High-Protein"],
+    },
+    {
+      id: "6",
+      name: "Mushroom Risotto",
+      description: "Creamy arborio rice with wild mushrooms, truffle oil, and fresh herbs",
+      price: 19.99,
+      image: saladImage, // Using placeholder image
+      category: "Mains",
+      dietary: ["Vegetarian", "Gluten-Free"],
+    },
+    {
+      id: "7",
+      name: "Greek Salad",
+      description: "Fresh tomatoes, cucumber, olives, red onion, and feta cheese with olive oil dressing",
+      price: 12.99,
+      image: saladImage,
+      category: "Salads",
+      dietary: ["Vegetarian", "Gluten-Free"],
+    },
+    {
+      id: "8",
+      name: "BBQ Ribs",
+      description: "Slow-cooked pork ribs with our signature BBQ sauce, served with coleslaw",
+      price: 24.99,
+      image: burgerImage, // Using placeholder image
+      category: "Mains",
+      dietary: ["Gluten-Free"],
+      popular: true,
+    },
+    {
+      id: "9",
+      name: "Chocolate Lava Cake",
+      description: "Warm chocolate cake with molten center, served with vanilla ice cream",
+      price: 8.99,
+      image: pizzaImage, // Using placeholder image
+      category: "Desserts",
+      dietary: ["Vegetarian"],
+    },
+    {
+      id: "10",
+      name: "Tiramisu",
+      description: "Classic Italian dessert with coffee-soaked ladyfingers and mascarpone cream",
+      price: 7.99,
+      image: saladImage, // Using placeholder image
+      category: "Desserts",
+      dietary: ["Vegetarian"],
+    },
+    {
+      id: "11",
+      name: "Fresh Orange Juice",
+      description: "Freshly squeezed orange juice",
+      price: 4.99,
+      image: burgerImage, // Using placeholder image
+      category: "Beverages",
+      dietary: ["Vegan", "Gluten-Free"],
+    },
+    {
+      id: "12",
+      name: "Espresso",
+      description: "Rich and bold Italian espresso",
+      price: 3.99,
+      image: pizzaImage, // Using placeholder image
+      category: "Beverages",
+      dietary: ["Vegan", "Gluten-Free"],
+    },
   ];
 
   const categories = ["All", "Mains", "Salads", "Desserts", "Beverages"];
@@ -78,6 +162,10 @@ const Menu = () => {
       ...prev,
       [itemId]: Math.max((prev[itemId] || 0) - 1, 0)
     }));
+  };
+
+  const clearCart = () => {
+    setCart({});
   };
 
   const getTotalItems = () => {
@@ -111,15 +199,13 @@ const Menu = () => {
               </div>
             </div>
             
-            {getTotalItems() > 0 && (
-              <Button variant="hero" className="relative">
-                <ShoppingCart className="h-5 w-5 mr-2" />
-                Cart ({getTotalItems()})
-                <Badge variant="destructive" className="absolute -top-2 -right-2 h-6 w-6 rounded-full p-0 flex items-center justify-center text-xs">
-                  {getTotalItems()}
-                </Badge>
-              </Button>
-            )}
+            <CartSidebar
+              cart={cart}
+              menuItems={menuItems}
+              onAddToCart={addToCart}
+              onRemoveFromCart={removeFromCart}
+              onClearCart={clearCart}
+            />
           </div>
         </div>
       </header>
@@ -227,24 +313,6 @@ const Menu = () => {
           ))}
         </div>
 
-        {/* Cart Summary */}
-        {getTotalItems() > 0 && (
-          <div className="fixed bottom-6 left-6 right-6 z-50">
-            <Card className="border-0 shadow-2xl bg-card/95 backdrop-blur-sm">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <p className="text-lg font-semibold">Cart Total</p>
-                    <p className="text-2xl font-bold text-primary">${getTotalPrice().toFixed(2)}</p>
-                  </div>
-                  <Button variant="hero" size="lg" className="px-8">
-                    Proceed to Checkout
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        )}
       </div>
     </div>
   );

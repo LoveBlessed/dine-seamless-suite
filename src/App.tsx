@@ -7,6 +7,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Index from "./pages/Index";
 import Menu from "./pages/Menu";
+import Checkout from "./pages/Checkout";
 import Staff from "./pages/Staff";
 import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
@@ -24,6 +25,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/menu" element={<Menu />} />
+            <Route path="/checkout" element={<Checkout />} />
             <Route path="/auth" element={<Auth />} />
             <Route 
               path="/staff" 

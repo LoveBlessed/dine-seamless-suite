@@ -128,117 +128,33 @@ const Auth = () => {
             <CardTitle className="text-2xl">Welcome</CardTitle>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="signin" className="w-full">
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
-              </TabsList>
+            <form onSubmit={handleSignIn} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="signin-email">Email</Label>
+                <Input
+                  id="signin-email"
+                  type="email"
+                  value={signInData.email}
+                  onChange={(e) => setSignInData(prev => ({ ...prev, email: e.target.value }))}
+                  required
+                />
+              </div>
               
-              <TabsContent value="signin" className="space-y-4 mt-6">
-                <form onSubmit={handleSignIn} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-email">Email</Label>
-                    <Input
-                      id="signin-email"
-                      type="email"
-                      value={signInData.email}
-                      onChange={(e) => setSignInData(prev => ({ ...prev, email: e.target.value }))}
-                      required
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-password">Password</Label>
-                    <Input
-                      id="signin-password"
-                      type="password"
-                      value={signInData.password}
-                      onChange={(e) => setSignInData(prev => ({ ...prev, password: e.target.value }))}
-                      required
-                    />
-                  </div>
-                  
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? 'Signing In...' : 'Sign In'}
-                  </Button>
-                </form>
-              </TabsContent>
+              <div className="space-y-2">
+                <Label htmlFor="signin-password">Password</Label>
+                <Input
+                  id="signin-password"
+                  type="password"
+                  value={signInData.password}
+                  onChange={(e) => setSignInData(prev => ({ ...prev, password: e.target.value }))}
+                  required
+                />
+              </div>
               
-              <TabsContent value="signup" className="space-y-4 mt-6">
-                <form onSubmit={handleSignUp} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-name">Full Name</Label>
-                    <Input
-                      id="signup-name"
-                      type="text"
-                      value={signUpData.fullName}
-                      onChange={(e) => setSignUpData(prev => ({ ...prev, fullName: e.target.value }))}
-                      required
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
-                    <Input
-                      id="signup-email"
-                      type="email"
-                      value={signUpData.email}
-                      onChange={(e) => setSignUpData(prev => ({ ...prev, email: e.target.value }))}
-                      required
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
-                    <Input
-                      id="signup-password"
-                      type="password"
-                      value={signUpData.password}
-                      onChange={(e) => setSignUpData(prev => ({ ...prev, password: e.target.value }))}
-                      required
-                    />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="role">Role</Label>
-                    <Select 
-                      value={signUpData.role} 
-                      onValueChange={(value: 'customer' | 'staff' | 'admin') => 
-                        setSignUpData(prev => ({ ...prev, role: value }))
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="customer">
-                          <div className="flex items-center space-x-2">
-                            <Users className="h-4 w-4" />
-                            <span>Customer</span>
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="staff">
-                          <div className="flex items-center space-x-2">
-                            <ChefHat className="h-4 w-4" />
-                            <span>Staff</span>
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="admin">
-                          <div className="flex items-center space-x-2">
-                            <Shield className="h-4 w-4" />
-                            <span>Admin</span>
-                          </div>
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  
-                  <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? 'Creating Account...' : 'Create Account'}
-                  </Button>
-                </form>
-              </TabsContent>
-            </Tabs>
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? 'Signing In...' : 'Sign In'}
+              </Button>
+            </form>
           </CardContent>
         </Card>
       </div>
