@@ -63,7 +63,7 @@ const CartSidebar: React.FC<CartSidebarProps> = ({
         description: "Please log in or sign up to place your order.",
         variant: "destructive",
       });
-      navigate('/auth');
+      navigate('/customer-auth');
       return;
     }
     navigate('/checkout');
