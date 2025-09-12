@@ -8,6 +8,7 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Index from "./pages/Index";
 import Menu from "./pages/Menu";
 import Checkout from "./pages/Checkout";
+import OrderHistory from "./pages/OrderHistory";
 import Staff from "./pages/Staff";
 import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
@@ -27,6 +28,14 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/menu" element={<Menu />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route 
+              path="/order-history" 
+              element={
+                <ProtectedRoute requiredRole="customer">
+                  <OrderHistory />
+                </ProtectedRoute>
+              } 
+            />
             <Route path="/auth" element={<Auth />} />
             <Route path="/customer-auth" element={<CustomerAuth />} />
             <Route 

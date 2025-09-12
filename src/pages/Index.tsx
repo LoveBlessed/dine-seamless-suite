@@ -142,15 +142,27 @@ const Index = () => {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             {user && profile ? (
-              <Button 
-                variant="hero" 
-                size="lg"
-                onClick={() => navigate("/menu")}
-                className="text-lg px-8 py-6"
-              >
-                <QrCode className="mr-2 h-5 w-5" />
-                View Menu
-              </Button>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Button 
+                  variant="hero" 
+                  size="lg"
+                  onClick={() => navigate("/menu")}
+                  className="text-lg px-8 py-6"
+                >
+                  <QrCode className="mr-2 h-5 w-5" />
+                  View Menu
+                </Button>
+                {profile.role === 'customer' && (
+                  <Button 
+                    variant="outline" 
+                    size="lg"
+                    onClick={() => navigate("/order-history")}
+                    className="text-lg px-8 py-6 bg-background/80 backdrop-blur-sm"
+                  >
+                    Order History
+                  </Button>
+                )}
+              </div>
             ) : (
               <GuestCheckout 
                 onGuestCheckout={handleGuestCheckout}

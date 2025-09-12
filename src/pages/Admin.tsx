@@ -1,39 +1,102 @@
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowLeft, BarChart3, Settings, Package, Users } from "lucide-react";
+import { ArrowLeft, BarChart3, Settings, Package, Users, TrendingUp } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 
 const Admin = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
+  const [stats, setStats] = useState({
+    todaysSales: 0,
+    activeOrders: 0,
+    totalCustomers: 0,
+    totalOrders: 0
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+      // Fetch today's sales
+      const today = new Date().toISOString().split('T')[0];
+      const { data: salesData } = await supabase
+        .from('orders')
+        .select('total_amount')
+        .gte('created_at', today)
+        .eq('status', 'completed');
+
+      const todaysSales = salesData?.reduce((sum, order) => sum + Number(order.total_amount), 0) || 0;
+
+      // Fetch active orders
+      const { data: activeOrdersData } = await supabase
+        .from('orders')
+        .select('id')
+        .neq('status', 'completed')
+        .neq('status', 'cancelled');
+
+      // Fetch total customers
+      const { data: customersData } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('role', 'customer');
+
+      // Fetch total orders
+      const { data: totalOrdersData } = await supabase
+        .from('orders')
+        .select('id');
+
+      setStats({
+        todaysSales,
+        activeOrders: activeOrdersData?.length || 0,
+        totalCustomers: customersData?.length || 0,
+        totalOrders: totalOrdersData?.length || 0
+      });
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load dashboard statistics",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const statsCards = [
     {
       title: "Today's Sales",
-      value: "$2,847.50",
+      value: loading ? "Loading..." : `$${stats.todaysSales.toFixed(2)}`,
       change: "+12.5%",
       icon: BarChart3,
-      color: "text-status-ready",
+      color: "text-green-600",
     },
     {
       title: "Active Orders",
-      value: "23",
+      value: loading ? "Loading..." : stats.activeOrders.toString(),
       change: "+5",
       icon: Package,
-      color: "text-status-cooking",
+      color: "text-orange-600",
     },
     {
       title: "Total Customers",
-      value: "156",
+      value: loading ? "Loading..." : stats.totalCustomers.toString(),
       change: "+8.2%",
       icon: Users,
-      color: "text-primary",
+      color: "text-blue-600",
     },
     {
-      title: "System Status",
-      value: "Online",
-      change: "All systems operational",
-      icon: Settings,
-      color: "text-status-ready",
+      title: "Total Orders",
+      value: loading ? "Loading..." : stats.totalOrders.toString(),
+      change: "All time",
+      icon: TrendingUp,
+      color: "text-purple-600",
     },
   ];
 
@@ -41,25 +104,40 @@ const Admin = () => {
     {
       title: "Menu Management",
       description: "Add, edit, or remove menu items",
-      action: () => console.log("Menu management"),
+      action: () => {
+        toast({
+          title: "Feature Coming Soon",
+          description: "Menu management will be available in the next update",
+        });
+      },
       variant: "hero" as const,
     },
     {
-      title: "Analytics Dashboard",
-      description: "View detailed reports and insights",
-      action: () => console.log("Analytics"),
+      title: "View All Orders",
+      description: "View all orders and their status",
+      action: () => navigate('/staff'),
       variant: "secondary" as const,
     },
     {
-      title: "Inventory Control",
-      description: "Manage stock levels and suppliers",
-      action: () => console.log("Inventory"),
+      title: "Customer Management",
+      description: "View and manage customer accounts",
+      action: () => {
+        toast({
+          title: "Feature Coming Soon",
+          description: "Customer management will be available in the next update",
+        });
+      },
       variant: "menu" as const,
     },
     {
-      title: "Staff Management",
-      description: "User roles and permissions",
-      action: () => console.log("Staff"),
+      title: "System Settings",
+      description: "Configure system preferences",
+      action: () => {
+        toast({
+          title: "Feature Coming Soon",
+          description: "System settings will be available in the next update",
+        });
+      },
       variant: "outline" as const,
     },
   ];

@@ -9,6 +9,7 @@ import { ArrowLeft, CreditCard, MapPin, Clock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -39,16 +40,34 @@ const Checkout = () => {
     setIsLoading(true);
 
     try {
-      // Here you would integrate with Supabase to create the order
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Mock API call
+      const orderPayload = {
+        customer_name: profile?.full_name || 'Guest',
+        customer_email: user?.email || '',
+        user_id: user?.id,
+        items: mockCart,
+        total_amount: total,
+        status: 'pending',
+        order_type: orderData.orderType,
+        table_number: orderData.orderType === 'dine-in' ? orderData.tableNumber : null,
+        payment_status: 'pending'
+      };
+
+      const { error } = await supabase
+        .from('orders')
+        .insert([orderPayload]);
+
+      if (error) {
+        throw error;
+      }
       
       toast({
         title: "Order Placed Successfully!",
         description: "Your order has been confirmed. You'll receive updates soon.",
       });
       
-      navigate('/');
+      navigate('/order-history');
     } catch (error) {
+      console.error('Order error:', error);
       toast({
         title: "Order Failed",
         description: "There was an error placing your order. Please try again.",
