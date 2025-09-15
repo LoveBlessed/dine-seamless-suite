@@ -11,6 +11,7 @@ import Checkout from "./pages/Checkout";
 import OrderHistory from "./pages/OrderHistory";
 import Staff from "./pages/Staff";
 import Admin from "./pages/Admin";
+import MenuManagement from "./pages/MenuManagement";
 import Auth from "./pages/Auth";
 import CustomerAuth from "./pages/CustomerAuth";
 import NotFound from "./pages/NotFound";
@@ -51,6 +52,14 @@ const App = () => (
               element={
                 <ProtectedRoute requiredRole="admin">
                   <Admin />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/menu-management" 
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <MenuManagement />
                 </ProtectedRoute>
               } 
             />

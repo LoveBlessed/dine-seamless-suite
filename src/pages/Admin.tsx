@@ -104,12 +104,7 @@ const Admin = () => {
     {
       title: "Menu Management",
       description: "Add, edit, or remove menu items",
-      action: () => {
-        toast({
-          title: "Feature Coming Soon",
-          description: "Menu management will be available in the next update",
-        });
-      },
+      action: () => navigate('/menu-management'),
       variant: "hero" as const,
     },
     {
