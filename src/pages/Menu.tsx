@@ -7,7 +7,6 @@ import { ArrowLeft, Search, Filter, Plus, Minus, ShoppingCart } from "lucide-rea
 import { useNavigate } from "react-router-dom";
 import CartSidebar from "@/components/cart/CartSidebar";
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
 import burgerImage from "@/assets/food-burger.jpg";
 import saladImage from "@/assets/food-salad.jpg";
 import pizzaImage from "@/assets/food-pizza.jpg";
@@ -15,23 +14,23 @@ import pizzaImage from "@/assets/food-pizza.jpg";
 interface MenuItem {
   id: string;
   name: string;
-  description: string | null;
+  description: string;
   price: number;
-  image_url: string | null;
+  image: string;
   category: string;
   dietary: string[];
-  is_popular: boolean;
-  is_available: boolean;
+  popular?: boolean;
 }
 
 const Menu = () => {
   const navigate = useNavigate();
-  const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [cart, setCart] = useState<{[key: string]: number}>({});
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const categories = ["All", "Mains", "Salads", "Desserts", "Beverages"];
 
   useEffect(() => {
     fetchMenuItems();
@@ -43,42 +42,29 @@ const Menu = () => {
         .from('menu_items')
         .select('*')
         .eq('is_available', true)
-        .order('created_at', { ascending: false });
+        .order('category')
+        .order('name');
 
       if (error) throw error;
-      
-      // Map the data to match our interface and add fallback images
-      const mappedItems = data?.map(item => ({
-        ...item,
-        image_url: item.image_url || getPlaceholderImage(item.category)
+
+      const formattedItems = data?.map(item => ({
+        id: item.id,
+        name: item.name,
+        description: item.description || '',
+        price: Number(item.price),
+        image: item.image_url || burgerImage, // Use placeholder if no image
+        category: item.category,
+        dietary: item.dietary || [],
+        popular: item.is_popular
       })) || [];
-      
-      setMenuItems(mappedItems);
+
+      setMenuItems(formattedItems);
     } catch (error) {
       console.error('Error fetching menu items:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load menu items",
-        variant: "destructive",
-      });
     } finally {
       setLoading(false);
     }
   };
-
-  const getPlaceholderImage = (category: string) => {
-    switch (category) {
-      case 'Salads':
-        return saladImage;
-      case 'Desserts':
-      case 'Beverages':
-        return pizzaImage;
-      default:
-        return burgerImage;
-    }
-  };
-
-  const categories = ["All", "Mains", "Salads", "Desserts", "Beverages"];
 
   const filteredItems = menuItems.filter(item => {
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -115,17 +101,15 @@ const Menu = () => {
     }, 0);
   };
 
-  // Create a legacy format for CartSidebar compatibility
-  const legacyMenuItems = menuItems.map(item => ({
-    id: item.id,
-    name: item.name,
-    description: item.description || "",
-    price: item.price,
-    image: item.image_url || getPlaceholderImage(item.category),
-    category: item.category,
-    dietary: item.dietary,
-    popular: item.is_popular
-  }));
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-lg text-foreground">Loading menu...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -149,7 +133,7 @@ const Menu = () => {
             
             <CartSidebar
               cart={cart}
-              menuItems={legacyMenuItems}
+              menuItems={menuItems}
               onAddToCart={addToCart}
               onRemoveFromCart={removeFromCart}
               onClearCart={clearCart}
@@ -187,19 +171,16 @@ const Menu = () => {
         </div>
 
         {/* Menu Items Grid */}
-        {loading ? (
-          <div className="text-center py-8">Loading menu items...</div>
-        ) : (
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredItems.map((item) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredItems.map((item) => (
             <Card key={item.id} className="overflow-hidden border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105">
               <div className="relative">
                 <img
-                  src={item.image_url || getPlaceholderImage(item.category)}
+                  src={item.image}
                   alt={item.name}
                   className="w-full h-48 object-cover"
                 />
-                {item.is_popular && (
+                {item.popular && (
                   <Badge className="absolute top-3 left-3 bg-primary text-primary-foreground">
                     Popular
                   </Badge>
@@ -210,7 +191,7 @@ const Menu = () => {
                 <div className="flex justify-between items-start">
                   <div>
                     <CardTitle className="text-xl">{item.name}</CardTitle>
-                    <CardDescription className="mt-2 text-base">{item.description || "No description available"}</CardDescription>
+                    <CardDescription className="mt-2 text-base">{item.description}</CardDescription>
                   </div>
                   <div className="text-2xl font-bold text-primary">${item.price}</div>
                 </div>
@@ -261,16 +242,14 @@ const Menu = () => {
                 </div>
               </CardContent>
             </Card>
-            ))}
-          </div>
-        )}
+          ))}
+        </div>
 
-        {!loading && filteredItems.length === 0 && (
+        {filteredItems.length === 0 && (
           <div className="text-center py-8">
-            <p className="text-muted-foreground">No menu items found</p>
+            <p className="text-muted-foreground">No menu items found matching your criteria.</p>
           </div>
         )}
-
       </div>
     </div>
   );
