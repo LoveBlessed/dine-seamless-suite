@@ -145,7 +145,7 @@ const Admin = () => {
     {
       title: "View All Orders",
       description: "View all orders and their status",
-      action: () => navigate('/staff'),
+      action: () => navigate('/orders-management'),
       variant: "secondary" as const,
     },
     {

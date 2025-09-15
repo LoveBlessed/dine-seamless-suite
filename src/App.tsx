@@ -14,6 +14,7 @@ import Admin from "./pages/Admin";
 import MenuManagement from "./pages/MenuManagement";
 import CustomerManagement from "./pages/CustomerManagement";
 import SystemSettings from "./pages/SystemSettings";
+import OrdersManagement from "./pages/OrdersManagement";
 import Auth from "./pages/Auth";
 import CustomerAuth from "./pages/CustomerAuth";
 import NotFound from "./pages/NotFound";
@@ -78,6 +79,14 @@ const App = () => (
               element={
                 <ProtectedRoute requiredRole="admin">
                   <SystemSettings />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/orders-management" 
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <OrdersManagement />
                 </ProtectedRoute>
               } 
             />
