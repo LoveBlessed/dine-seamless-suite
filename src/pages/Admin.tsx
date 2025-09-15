@@ -5,6 +5,15 @@ import { ArrowLeft, BarChart3, Settings, Package, Users, TrendingUp } from "luci
 import { useNavigate } from "react-router-dom";
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { formatDistanceToNow } from 'date-fns';
+
+interface RecentActivity {
+  id: string;
+  type: 'order' | 'menu' | 'user';
+  title: string;
+  description: string;
+  created_at: string;
+}
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -16,9 +25,11 @@ const Admin = () => {
     totalOrders: 0
   });
   const [loading, setLoading] = useState(true);
+  const [recentActivity, setRecentActivity] = useState<RecentActivity[]>([]);
 
   useEffect(() => {
     fetchStats();
+    fetchRecentActivity();
   }, []);
 
   const fetchStats = async () => {
@@ -69,6 +80,30 @@ const Admin = () => {
     }
   };
 
+  const fetchRecentActivity = async () => {
+    try {
+      // Fetch recent orders
+      const { data: ordersData } = await supabase
+        .from('orders')
+        .select('id, customer_name, total_amount, created_at, table_number')
+        .order('created_at', { ascending: false })
+        .limit(10);
+
+      // Transform orders into activity items
+      const orderActivities: RecentActivity[] = (ordersData || []).map(order => ({
+        id: order.id,
+        type: 'order' as const,
+        title: 'New order received',
+        description: `${order.customer_name} - $${Number(order.total_amount).toFixed(2)}${order.table_number ? ` (Table ${order.table_number})` : ''}`,
+        created_at: order.created_at
+      }));
+
+      setRecentActivity(orderActivities.slice(0, 5));
+    } catch (error) {
+      console.error('Error fetching recent activity:', error);
+    }
+  };
+
   const statsCards = [
     {
       title: "Today's Sales",
@@ -116,23 +151,13 @@ const Admin = () => {
     {
       title: "Customer Management",
       description: "View and manage customer accounts",
-      action: () => {
-        toast({
-          title: "Feature Coming Soon",
-          description: "Customer management will be available in the next update",
-        });
-      },
+      action: () => navigate('/customer-management'),
       variant: "menu" as const,
     },
     {
       title: "System Settings",
       description: "Configure system preferences",
-      action: () => {
-        toast({
-          title: "Feature Coming Soon",
-          description: "System settings will be available in the next update",
-        });
-      },
+      action: () => navigate('/system-settings'),
       variant: "outline" as const,
     },
   ];
@@ -210,29 +235,23 @@ const Admin = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
-                <div>
-                  <p className="font-medium">New order received</p>
-                  <p className="text-sm text-muted-foreground">Table A1 - $33.98</p>
+              {recentActivity.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  No recent activity found
                 </div>
-                <p className="text-sm text-muted-foreground">2 minutes ago</p>
-              </div>
-              
-              <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
-                <div>
-                  <p className="font-medium">Menu item updated</p>
-                  <p className="text-sm text-muted-foreground">Gourmet Burger - Price changed</p>
-                </div>
-                <p className="text-sm text-muted-foreground">15 minutes ago</p>
-              </div>
-              
-              <div className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
-                <div>
-                  <p className="font-medium">Staff login</p>
-                  <p className="text-sm text-muted-foreground">Kitchen staff member logged in</p>
-                </div>
-                <p className="text-sm text-muted-foreground">1 hour ago</p>
-              </div>
+              ) : (
+                recentActivity.map((activity) => (
+                  <div key={activity.id} className="flex items-center justify-between p-4 bg-muted/30 rounded-lg">
+                    <div>
+                      <p className="font-medium">{activity.title}</p>
+                      <p className="text-sm text-muted-foreground">{activity.description}</p>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      {formatDistanceToNow(new Date(activity.created_at), { addSuffix: true })}
+                    </p>
+                  </div>
+                ))
+              )}
             </div>
           </CardContent>
         </Card>

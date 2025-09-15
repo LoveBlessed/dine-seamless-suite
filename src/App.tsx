@@ -12,6 +12,8 @@ import OrderHistory from "./pages/OrderHistory";
 import Staff from "./pages/Staff";
 import Admin from "./pages/Admin";
 import MenuManagement from "./pages/MenuManagement";
+import CustomerManagement from "./pages/CustomerManagement";
+import SystemSettings from "./pages/SystemSettings";
 import Auth from "./pages/Auth";
 import CustomerAuth from "./pages/CustomerAuth";
 import NotFound from "./pages/NotFound";
@@ -60,6 +62,22 @@ const App = () => (
               element={
                 <ProtectedRoute requiredRole="admin">
                   <MenuManagement />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/customer-management" 
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <CustomerManagement />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/system-settings" 
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <SystemSettings />
                 </ProtectedRoute>
               } 
             />
