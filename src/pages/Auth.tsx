@@ -90,7 +90,7 @@ const Auth = () => {
             <p className="text-muted-foreground">Secure access for authorized personnel</p>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="bg-accent/10 border border-accent/20 rounded-lg p-4">
+            {/* <div className="bg-accent/10 border border-accent/20 rounded-lg p-4">
               <h3 className="font-semibold text-accent-foreground mb-2">Test Credentials</h3>
               <div className="space-y-2 text-sm">
                 <div>
@@ -100,7 +100,7 @@ const Auth = () => {
                   <strong>Admin:</strong> admin@bistro.com / admin123
                 </div>
               </div>
-            </div>
+            </div> */}
             
             <form onSubmit={handleSignIn} className="space-y-4">
               <div className="space-y-2">
@@ -108,7 +108,7 @@ const Auth = () => {
                 <Input
                   id="signin-email"
                   type="email"
-                  placeholder="staff@bistro.com"
+                  placeholder="Enter staff email"
                   value={signInData.email}
                   onChange={(e) => setSignInData(prev => ({ ...prev, email: e.target.value }))}
                   className="bg-background/60 border-accent/20"
