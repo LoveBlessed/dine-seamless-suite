@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Settings, Store, Bell, Shield, Database } from "lucide-react";
@@ -8,16 +8,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { supabase } from "@/integrations/supabase/client";
 
 const SystemSettings = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   
   const [settings, setSettings] = useState({
-    restaurantName: "Gourmet Express",
-    restaurantAddress: "123 Food Street, Culinary City",
-    restaurantPhone: "+1 (555) 123-4567",
-    restaurantEmail: "info@gourmetexpress.com",
+    restaurantName: "Oliver Tweest",
+    restaurantAddress: "Uyo, Akwa Ibom State",
+    restaurantPhone: "+234 (800) 123-4567",
+    restaurantEmail: "info@olivertweest.com",
     enableNotifications: true,
     enableGuestOrders: true,
     enableTableOrders: true,
@@ -25,11 +26,78 @@ const SystemSettings = () => {
     description: "Premium dining experience with fresh, locally sourced ingredients."
   });
 
-  const handleSave = () => {
-    toast({
-      title: "Settings Saved",
-      description: "System settings have been updated successfully",
-    });
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('system_settings')
+        .select('*')
+        .single();
+
+      if (error) {
+        console.error('Error fetching settings:', error);
+        return;
+      }
+
+      if (data) {
+        setSettings({
+          restaurantName: data.restaurant_name,
+          restaurantAddress: data.restaurant_address,
+          restaurantPhone: data.restaurant_phone,
+          restaurantEmail: data.restaurant_email,
+          enableNotifications: data.enable_notifications,
+          enableGuestOrders: data.enable_guest_orders,
+          enableTableOrders: data.enable_table_orders,
+          maxOrdersPerDay: data.max_orders_per_day,
+          description: data.description
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching settings:', error);
+    }
+  };
+
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      const { error } = await supabase
+        .from('system_settings')
+        .update({
+          restaurant_name: settings.restaurantName,
+          restaurant_address: settings.restaurantAddress,
+          restaurant_phone: settings.restaurantPhone,
+          restaurant_email: settings.restaurantEmail,
+          enable_notifications: settings.enableNotifications,
+          enable_guest_orders: settings.enableGuestOrders,
+          enable_table_orders: settings.enableTableOrders,
+          max_orders_per_day: settings.maxOrdersPerDay,
+          description: settings.description
+        })
+        .eq('id', (await supabase.from('system_settings').select('id').single()).data?.id);
+
+      if (error) {
+        throw error;
+      }
+
+      toast({
+        title: "Settings Saved",
+        description: "System settings have been updated successfully",
+      });
+    } catch (error) {
+      console.error('Error saving settings:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save settings. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const settingSections = [
@@ -196,8 +264,8 @@ const SystemSettings = () => {
 
           {/* Save Button */}
           <div className="flex justify-end pt-4">
-            <Button onClick={handleSave} size="lg">
-              Save All Settings
+            <Button onClick={handleSave} size="lg" disabled={loading}>
+              {loading ? "Saving..." : "Save All Settings"}
             </Button>
           </div>
         </div>

@@ -131,6 +131,51 @@ export type Database = {
         }
         Relationships: []
       }
+      system_settings: {
+        Row: {
+          created_at: string
+          description: string
+          enable_guest_orders: boolean
+          enable_notifications: boolean
+          enable_table_orders: boolean
+          id: string
+          max_orders_per_day: number
+          restaurant_address: string
+          restaurant_email: string
+          restaurant_name: string
+          restaurant_phone: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          enable_guest_orders?: boolean
+          enable_notifications?: boolean
+          enable_table_orders?: boolean
+          id?: string
+          max_orders_per_day?: number
+          restaurant_address?: string
+          restaurant_email?: string
+          restaurant_name?: string
+          restaurant_phone?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          enable_guest_orders?: boolean
+          enable_notifications?: boolean
+          enable_table_orders?: boolean
+          id?: string
+          max_orders_per_day?: number
+          restaurant_address?: string
+          restaurant_email?: string
+          restaurant_name?: string
+          restaurant_phone?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

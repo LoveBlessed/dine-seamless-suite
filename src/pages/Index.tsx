@@ -87,7 +87,7 @@ const Index = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
               <ChefHat className="h-8 w-8 text-primary" />
-              <span className="text-2xl font-bold text-foreground">Bistro & Garden</span>
+              <span className="text-2xl font-bold text-foreground">Oliver Tweest</span>
             </div>
             <nav className="flex items-center space-x-4">
               {user && profile ? (

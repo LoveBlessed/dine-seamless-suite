@@ -121,7 +121,7 @@ const CustomerAuth = () => {
             <div className="mx-auto w-16 h-16 bg-gradient-warm rounded-full flex items-center justify-center mb-4">
               <Users className="h-8 w-8 text-primary-foreground" />
             </div>
-            <CardTitle className="text-2xl">Welcome to Bistro & Garden</CardTitle>
+            <CardTitle className="text-2xl">Welcome to Oliver Tweest</CardTitle>
           </CardHeader>
           <CardContent>
             <Tabs defaultValue="signin" className="w-full">
