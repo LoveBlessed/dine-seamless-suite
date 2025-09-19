@@ -193,7 +193,7 @@ const Menu = () => {
                     <CardTitle className="text-xl">{item.name}</CardTitle>
                     <CardDescription className="mt-2 text-base">{item.description}</CardDescription>
                   </div>
-                  <div className="text-2xl font-bold text-primary">${item.price}</div>
+                  <div className="text-2xl font-bold text-primary">₦{item.price}</div>
                 </div>
                 
                 <div className="flex flex-wrap gap-1 mt-3">

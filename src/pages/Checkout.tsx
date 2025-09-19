@@ -21,14 +21,16 @@ const Checkout = () => {
     orderType: 'dine-in',
     tableNumber: '',
     deliveryAddress: '',
+    customerName: '',
+    customerPhone: '',
     paymentMethod: 'card',
     specialInstructions: '',
   });
 
   // Mock cart data - in real app this would come from context/state
   const mockCart = [
-    { id: '1', name: 'Gourmet Burger', price: 18.99, quantity: 2, image: '/placeholder.jpg' },
-    { id: '2', name: 'Garden Fresh Salad', price: 14.99, quantity: 1, image: '/placeholder.jpg' },
+    { id: '1', name: 'Gourmet Burger', price: 2500, quantity: 2, image: '/placeholder.jpg' },
+    { id: '2', name: 'Garden Fresh Salad', price: 1800, quantity: 1, image: '/placeholder.jpg' },
   ];
 
   const subtotal = mockCart.reduce((total, item) => total + (item.price * item.quantity), 0);
@@ -159,15 +161,37 @@ const Checkout = () => {
                 )}
 
                 {orderData.orderType === 'delivery' && (
-                  <div className="space-y-2">
-                    <Label htmlFor="deliveryAddress">Delivery Address</Label>
-                    <Input
-                      id="deliveryAddress"
-                      value={orderData.deliveryAddress}
-                      onChange={(e) => setOrderData(prev => ({ ...prev, deliveryAddress: e.target.value }))}
-                      placeholder="Enter delivery address"
-                      required
-                    />
+                  <div className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="customerName">Your Name</Label>
+                      <Input
+                        id="customerName"
+                        value={orderData.customerName}
+                        onChange={(e) => setOrderData(prev => ({ ...prev, customerName: e.target.value }))}
+                        placeholder="Enter your full name"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="customerPhone">Phone Number</Label>
+                      <Input
+                        id="customerPhone"
+                        value={orderData.customerPhone}
+                        onChange={(e) => setOrderData(prev => ({ ...prev, customerPhone: e.target.value }))}
+                        placeholder="Enter your phone number"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="deliveryAddress">Delivery Address</Label>
+                      <Input
+                        id="deliveryAddress"
+                        value={orderData.deliveryAddress}
+                        onChange={(e) => setOrderData(prev => ({ ...prev, deliveryAddress: e.target.value }))}
+                        placeholder="Enter detailed delivery address"
+                        required
+                      />
+                    </div>
                   </div>
                 )}
 
@@ -221,7 +245,7 @@ const Checkout = () => {
                       <p className="font-medium">{item.name}</p>
                       <p className="text-sm text-muted-foreground">Qty: {item.quantity}</p>
                     </div>
-                    <p className="font-medium">${(item.price * item.quantity).toFixed(2)}</p>
+                    <p className="font-medium">₦{(item.price * item.quantity).toLocaleString()}</p>
                   </div>
                 ))}
                 
@@ -230,16 +254,16 @@ const Checkout = () => {
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
-                    <span>${subtotal.toFixed(2)}</span>
+                    <span>₦{subtotal.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Tax (8%)</span>
-                    <span>${tax.toFixed(2)}</span>
+                    <span>₦{tax.toLocaleString()}</span>
                   </div>
                   <Separator />
                   <div className="flex justify-between font-bold text-lg">
                     <span>Total</span>
-                    <span>${total.toFixed(2)}</span>
+                    <span>₦{total.toLocaleString()}</span>
                   </div>
                 </div>
               </CardContent>
@@ -253,9 +277,23 @@ const Checkout = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-2xl font-bold text-primary">25-30 minutes</p>
+                <p className="text-2xl font-bold text-primary">
+                  {orderData.orderType === 'delivery' 
+                    ? orderData.deliveryAddress.toLowerCase().includes('uyo') || orderData.deliveryAddress.toLowerCase().includes('akwa ibom')
+                      ? '45-60 minutes'
+                      : '60-90 minutes'
+                    : orderData.orderType === 'takeaway' 
+                      ? '15-20 minutes'
+                      : '20-25 minutes'
+                  }
+                </p>
                 <p className="text-sm text-muted-foreground">
-                  {orderData.orderType === 'delivery' ? 'Delivery time' : 'Preparation time'}
+                  {orderData.orderType === 'delivery' 
+                    ? 'Delivery time (varies by location)' 
+                    : orderData.orderType === 'takeaway'
+                      ? 'Ready for pickup'
+                      : 'Preparation time'
+                  }
                 </p>
               </CardContent>
             </Card>
@@ -267,7 +305,7 @@ const Checkout = () => {
                 size="lg" 
                 disabled={isLoading}
               >
-                {isLoading ? 'Placing Order...' : `Place Order - $${total.toFixed(2)}`}
+                {isLoading ? 'Placing Order...' : `Place Order - ₦${total.toLocaleString()}`}
               </Button>
             </form>
           </div>
